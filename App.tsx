@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
 */
-import React, { useState, ChangeEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop';
 import { generateVibeBasedImage } from './services/geminiService';
@@ -66,6 +66,81 @@ function App() {
     const [crop, setCrop] = useState<Crop>();
     const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
     const imgRef = useRef<HTMLImageElement>(null);
+
+    // Paste image state
+    const [pastedImages, setPastedImages] = useState<string[]>([]);
+    const [isPasteModalOpen, setIsPasteModalOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+        const handlePaste = (event: ClipboardEvent) => {
+            // Don't interfere with text input pasting
+            if (document.activeElement?.tagName === 'TEXTAREA' || document.activeElement?.tagName === 'INPUT') {
+                return;
+            }
+
+            const items = event.clipboardData?.items;
+            if (!items) return;
+
+            const imageFiles = Array.from(items)
+                .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
+                .map(item => item.getAsFile());
+
+            // FIX: Filter out null values to ensure we only process valid files.
+            const validImageFiles = imageFiles.filter((file): file is File => file !== null);
+
+            if (validImageFiles.length > 0) {
+                event.preventDefault();
+                const filePromises = validImageFiles.map(file => {
+                    return new Promise<string>((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            if (reader.result) {
+                                resolve(reader.result as string);
+                            } else {
+                                reject('Failed to read file');
+                            }
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                });
+
+                Promise.all(filePromises).then(dataUrls => {
+                    setPastedImages(dataUrls);
+                    setIsPasteModalOpen(true);
+                }).catch(err => {
+                    console.error("Error reading pasted images:", err);
+                });
+            }
+        };
+
+        window.addEventListener('paste', handlePaste);
+
+        return () => {
+            window.removeEventListener('paste', handlePaste);
+        };
+    }, []);
+
+    const handleAddPastedImages = (type: 'main' | 'inspiration') => {
+        const maxImages = type === 'main' ? MAX_MAIN_IMAGES : MAX_INSPIRATION_IMAGES;
+        const currentCount = type === 'main' ? uploadedImages.length : inspirationImages.length;
+        const availableSlots = maxImages - currentCount;
+        
+        if (availableSlots <= 0) return;
+
+        const imagesToAdd = pastedImages.slice(0, availableSlots);
+        const newQueueItems = imagesToAdd.map(dataUrl => ({ dataUrl, type }));
+
+        setCropQueue(prev => [...prev, ...newQueueItems]);
+        
+        setIsPasteModalOpen(false);
+        setPastedImages([]);
+    };
+
+    const handleCancelPaste = () => {
+        setIsPasteModalOpen(false);
+        setPastedImages([]);
+    }
 
     const handleImageUpload = (e: ChangeEvent<HTMLInputElement>, type: 'main' | 'inspiration') => {
         if (e.target.files) {
@@ -254,6 +329,49 @@ function App() {
     return (
         <main className="bg-gradient-to-br from-pink-400 via-purple-500 to-orange-500 text-white min-h-screen w-full flex flex-col items-center justify-center p-4 pb-24 overflow-y-auto">
             <AnimatePresence>
+                {isPasteModalOpen && pastedImages.length > 0 && (
+                    <motion.div
+                        className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                    >
+                        <motion.div
+                            className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 w-full max-w-md flex flex-col items-center gap-4 text-white"
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                        >
+                            <h2 className="text-2xl font-bold">Image Pasted</h2>
+                            <p className="text-neutral-200 text-center">
+                               {pastedImages.length} image{pastedImages.length > 1 ? 's' : ''} detected. Where should {pastedImages.length > 1 ? 'they' : 'it'} go?
+                            </p>
+                            <img 
+                                src={pastedImages[0]} 
+                                alt="Pasted preview" 
+                                className="max-h-40 rounded-lg object-contain my-2 shadow-lg"
+                            />
+                            <div className="flex flex-col sm:flex-row gap-4 w-full mt-2">
+                                <button 
+                                    onClick={() => handleAddPastedImages('main')} 
+                                    className={`${primaryButtonClasses} w-full`}
+                                    disabled={uploadedImages.length >= MAX_MAIN_IMAGES}
+                                >
+                                    Add to Your Photos ({uploadedImages.length}/{MAX_MAIN_IMAGES})
+                                </button>
+                                <button 
+                                    onClick={() => handleAddPastedImages('inspiration')} 
+                                    className="text-lg font-semibold text-center text-white bg-purple-500 py-3 px-8 rounded-full transform transition-transform duration-200 hover:scale-105 hover:bg-purple-600 shadow-lg disabled:bg-neutral-400 disabled:cursor-not-allowed disabled:scale-100 w-full"
+                                    disabled={inspirationImages.length >= MAX_INSPIRATION_IMAGES}
+                                >
+                                    Add to Vibe Photos ({inspirationImages.length}/{MAX_INSPIRATION_IMAGES})
+                                </button>
+                            </div>
+                             <button onClick={handleCancelPaste} className="mt-2 text-neutral-300 hover:text-white transition-colors">Cancel</button>
+                        </motion.div>
+                    </motion.div>
+                )}
+
                 {cropQueue.length > 0 && (
                     <motion.div
                         className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
