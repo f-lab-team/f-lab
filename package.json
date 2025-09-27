@@ -1,5 +1,5 @@
 {
-  "name": "base-of-perfect-shot-api",
+  "name": "copy-of-base-of-perfect-shot-api",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -14,7 +14,8 @@
     "react": "^19.1.1",
     "tailwind-merge": "^3.3.1",
     "framer-motion": "^12.23.12",
-    "clsx": "^2.1.1"
+    "clsx": "^2.1.1",
+    "react-image-crop": "^11.0.6"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
