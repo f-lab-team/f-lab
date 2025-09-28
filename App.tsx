@@ -9,6 +9,7 @@ import { generateVibeBasedImage } from './services/geminiService';
 import PhotoCard from './components/PhotoCard';
 import { createAlbumPage } from './lib/albumUtils';
 import Footer from './components/Footer';
+import PolaroidCard from './components/PolaroidCard';
 
 const MAX_MAIN_IMAGES = 10;
 const MAX_INSPIRATION_IMAGES = 5;
@@ -52,6 +53,118 @@ const primaryButtonClasses = "text-lg font-semibold text-center text-white bg-or
 const secondaryButtonClasses = "text-lg font-semibold text-center text-white bg-white/10 backdrop-blur-sm border-2 border-white/80 py-3 px-8 rounded-full transform transition-transform duration-200 hover:scale-105 hover:bg-white hover:text-black";
 const fileInputButtonClasses = "text-base font-semibold text-center text-white bg-white/20 backdrop-blur-sm border-2 border-white/60 py-2 px-5 rounded-full transform transition-transform duration-200 hover:scale-105 hover:bg-white hover:text-black cursor-pointer";
 
+const CameraIcon = () => (
+    <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', delay: 0.1 }}
+        className="relative z-10"
+    >
+        <svg width="150" height="100" viewBox="0 0 150 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-2xl">
+            <rect x="10" y="20" width="130" height="70" rx="8" fill="#2D2D2D"/>
+            <rect x="5" y="25" width="140" height="60" rx="5" fill="#1C1C1C"/>
+            <circle cx="75" cy="55" r="30" fill="#111111"/>
+            <circle cx="75" cy="55" r="25" fill="#2D2D2D"/>
+            <circle cx="75" cy="55" r="18" fill="#111111"/>
+            <path d="M75 42.5 a12.5 12.5 0 0 1 0 25" stroke="rgba(255,255,255,0.1)" strokeWidth="3"/>
+            <rect x="30" y="15" width="40" height="10" rx="3" fill="#2D2D2D"/>
+            <rect x="20" y="28" width="110" height="5" fill="#FF4141"/>
+            <rect x="110" y="38" width="15" height="8" rx="2" fill="#4A4A4A"/>
+            <circle cx="25" cy="38" r="4" fill="#FF4141"/>
+        </svg>
+    </motion.div>
+);
+
+const LandingPage = ({ onGetStarted }: { onGetStarted: () => void }) => (
+    <div className="z-10 flex flex-col items-center justify-center w-full h-full flex-1 text-center p-4 overflow-hidden">
+        <motion.h1 
+            className="text-7xl md:text-9xl font-bold"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+        >
+            Perfect Shot
+        </motion.h1>
+        <motion.p 
+            className="text-neutral-200 mt-2 text-xl tracking-wide max-w-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+        >
+            Unlock your perfect photos, effortlessly.
+        </motion.p>
+        
+        <div className="relative w-full max-w-2xl h-80 my-8 flex items-center justify-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+              className="absolute left-[20%] text-4xl font-thin text-white/50"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+            </motion.div>
+            
+            <CameraIcon />
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
+              className="absolute right-[20%] text-4xl font-thin text-white/50"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </motion.div>
+
+            <PolaroidCard
+                imgSrc="https://images.unsplash.com/photo-1587502537125-aac06355d246?auto=format&fit=crop&w=400&q=80"
+                alt="Man looking out a window over the water"
+                caption="Cinematic Moments"
+                className="bottom-[-2rem] left-1/2 -translate-x-1/2"
+                rotation={5}
+                delay={0.4}
+            />
+            <PolaroidCard
+                imgSrc="https://images.unsplash.com/photo-1519638831568-d9897f54ed69?auto=format&fit=crop&w=400&q=80"
+                alt="Man with camera by a lake and mountains"
+                caption="New Adventures"
+                className="top-0 left-0"
+                rotation={-15}
+                delay={0.2}
+            />
+            <PolaroidCard
+                imgSrc="https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=400&q=80"
+                alt="Man in a coat on a sunny beach"
+                caption="Perfect Vibe"
+                className="top-0 right-0"
+                rotation={15}
+                delay={0.3}
+            />
+        </div>
+
+        <motion.div 
+            className="flex flex-col sm:flex-row gap-4 mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+        >
+            <button 
+                onClick={onGetStarted} 
+                className="text-lg font-semibold text-center text-white bg-gradient-to-r from-orange-500 to-red-500 py-3 px-10 rounded-full transform transition-transform duration-200 hover:scale-105 shadow-lg"
+            >
+                Get Started
+            </button>
+            <button className={secondaryButtonClasses}>
+                Learn More
+            </button>
+        </motion.div>
+         <motion.div 
+            className="absolute bottom-10 right-10 text-white/50 text-4xl"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            aria-hidden="true"
+        >
+            ✨
+        </motion.div>
+    </div>
+);
+
 function App() {
     const [uploadedImages, setUploadedImages] = useState<string[]>([]);
     const [inspirationImages, setInspirationImages] = useState<string[]>([]);
@@ -85,8 +198,10 @@ function App() {
                 .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
                 .map(item => item.getAsFile());
 
-            // FIX: Filter out null values to ensure we only process valid files.
-            const validImageFiles = imageFiles.filter((file): file is File => file !== null);
+            // FIX: Use `instanceof File` for a more robust check to ensure that only
+            // actual File objects are processed. This prevents runtime errors if `getAsFile()`
+            // returns a non-null but non-File object.
+            const validImageFiles = imageFiles.filter((file): file is File => file instanceof File);
 
             if (validImageFiles.length > 0) {
                 event.preventDefault();
@@ -149,18 +264,26 @@ function App() {
             
             const files = Array.from(e.target.files).slice(0, maxImages - currentCount);
             
-            const newQueueItems: Promise<{ dataUrl: string, type: 'main' | 'inspiration' }>[] = files.map(file => {
-                return new Promise((resolve) => {
+            // FIX: Refactored to add robust error handling for file reading, mirroring the implementation in `handlePaste`.
+            const newQueueItemsPromises: Promise<{ dataUrl: string, type: 'main' | 'inspiration' }>[] = files.map(file => {
+                return new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onloadend = () => {
-                        resolve({ dataUrl: reader.result as string, type });
+                        if (reader.result) {
+                            resolve({ dataUrl: reader.result as string, type });
+                        } else {
+                            reject('Failed to read file');
+                        }
                     };
+                    reader.onerror = reject;
                     reader.readAsDataURL(file);
                 });
             });
 
-            Promise.all(newQueueItems).then(items => {
+            Promise.all(newQueueItemsPromises).then(items => {
                 setCropQueue(prev => [...prev, ...items]);
+            }).catch(err => {
+                console.error("Error reading uploaded images:", err);
             });
             
             e.target.value = '';
@@ -412,158 +535,162 @@ function App() {
                 )}
             </AnimatePresence>
 
-            <div className="z-10 flex flex-col items-center justify-center w-full h-full flex-1 min-h-0">
-                <div className="text-center mb-10">
-                    <h1 className="text-6xl md:text-8xl font-bold">Perfect Shot</h1>
-                    <p className="text-neutral-200 mt-2 text-xl tracking-wide">Get your perfect shot, effortlessly.</p>
-                </div>
-
-                {(appState === 'idle' || appState === 'photos-uploaded') && (
-                     <motion.div 
-                        className="w-full max-w-4xl mx-auto flex flex-col gap-8 items-start"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                     >
-                        <div className="w-full flex flex-col lg:flex-row gap-8 items-start">
-                            <div className="flex-1 w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
-                                <h2 className="text-2xl font-bold text-white">1. Upload Your Photos</h2>
-                                <div className="w-full min-h-[200px] bg-black/20 rounded-lg p-3 grid grid-cols-3 gap-3">
-                                    <AnimatePresence>
-                                        {uploadedImages.map((src, index) => (
-                                            <motion.div key={src.slice(0, 30) + index} className="relative aspect-square" layout
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                            >
-                                                <img src={src} className="w-full h-full object-cover rounded-md" alt={`Your Photo ${index + 1}`}/>
-                                                <button onClick={() => removeMainImage(index)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">&times;</button>
-                                            </motion.div>
-                                        ))}
-                                    </AnimatePresence>
-                                </div>
-                                {uploadedImages.length < MAX_MAIN_IMAGES && (
-                                    <label htmlFor="main-file-upload" className={fileInputButtonClasses}>
-                                        Add Your Photos ({uploadedImages.length}/{MAX_MAIN_IMAGES})
-                                    </label>
-                                )}
-                                <input id="main-file-upload" type="file" multiple className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageUpload(e, 'main')} disabled={uploadedImages.length >= MAX_MAIN_IMAGES}/>
-                            </div>
-
-                            <div className="flex-1 w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
-                                <h2 className="text-2xl font-bold text-white">2. Upload Vibe Photos</h2>
-                                <div className="w-full min-h-[200px] bg-black/20 rounded-lg p-3 grid grid-cols-3 gap-3">
-                                    <AnimatePresence>
-                                        {inspirationImages.map((src, index) => (
-                                            <motion.div key={src.slice(0, 30) + index} className="relative aspect-square" layout
-                                                initial={{ opacity: 0, scale: 0.5 }}
-                                                animate={{ opacity: 1, scale: 1 }}
-                                                exit={{ opacity: 0, scale: 0.5 }}
-                                            >
-                                                <img src={src} className="w-full h-full object-cover rounded-md" alt={`Inspiration ${index + 1}`}/>
-                                                <button onClick={() => removeInspirationImage(index)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">&times;</button>
-                                            </motion.div>
-                                        ))}
-                                    </AnimatePresence>
-                                </div>
-                                {inspirationImages.length < MAX_INSPIRATION_IMAGES && (
-                                    <label htmlFor="inspiration-file-upload" className={fileInputButtonClasses}>
-                                        Add Photos ({inspirationImages.length}/{MAX_INSPIRATION_IMAGES})
-                                    </label>
-                                )}
-                                <input id="inspiration-file-upload" type="file" multiple className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageUpload(e, 'inspiration')} disabled={inspirationImages.length >= MAX_INSPIRATION_IMAGES}/>
-                            </div>
-                        </div>
-                        
-                        <div className="w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
-                             <h2 className="text-2xl font-bold text-white">3. (Optional) Add Instructions</h2>
-                             <textarea
-                                 value={userPrompt}
-                                 onChange={(e) => setUserPrompt(e.target.value)}
-                                 placeholder="e.g., make my hair blue, place me in a futuristic city, turn this into a watercolor painting..."
-                                 className="w-full h-24 bg-black/20 rounded-lg p-3 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
-                                 aria-label="Additional instructions for image generation"
-                             />
-                        </div>
-                        
-                        <div className="w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
-                            <h2 className="text-2xl font-bold text-white">4. Number of Images</h2>
-                            <div className="w-full flex items-center gap-4 px-2">
-                                <input
-                                    type="range"
-                                    min="1"
-                                    max="8"
-                                    value={generationCount}
-                                    onChange={(e) => setGenerationCount(Number(e.target.value))}
-                                    className="w-full h-2 bg-black/30 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                                    aria-label="Number of images to generate"
-                                />
-                                <span className="text-2xl font-bold w-12 text-center select-none">{generationCount}</span>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-
-                {(appState === 'idle' || appState === 'photos-uploaded') && (
-                     <div className="mt-8">
-                         <button onClick={handleGenerateClick} className={primaryButtonClasses} disabled={isGenerateButtonDisabled}>
-                            Generate ({generationCount} Image{generationCount > 1 ? 's' : ''})
-                        </button>
+            {appState === 'idle' ? (
+                <LandingPage onGetStarted={() => setAppState('photos-uploaded')} />
+            ) : (
+                <div className="z-10 flex flex-col items-center justify-center w-full h-full flex-1 min-h-0">
+                    <div className="text-center mb-10">
+                        <h1 className="text-6xl md:text-8xl font-bold">Perfect Shot</h1>
+                        <p className="text-neutral-200 mt-2 text-xl tracking-wide">Get your perfect shot, effortlessly.</p>
                     </div>
-                )}
 
+                    {appState === 'photos-uploaded' && (
+                         <motion.div 
+                            className="w-full max-w-4xl mx-auto flex flex-col gap-8 items-start"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                         >
+                            <div className="w-full flex flex-col lg:flex-row gap-8 items-start">
+                                <div className="flex-1 w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
+                                    <h2 className="text-2xl font-bold text-white">1. Upload Your Photos</h2>
+                                    <div className="w-full min-h-[200px] bg-black/20 rounded-lg p-3 grid grid-cols-3 gap-3">
+                                        <AnimatePresence>
+                                            {uploadedImages.map((src, index) => (
+                                                <motion.div key={src.slice(0, 30) + index} className="relative aspect-square" layout
+                                                    initial={{ opacity: 0, scale: 0.5 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.5 }}
+                                                >
+                                                    <img src={src} className="w-full h-full object-cover rounded-md" alt={`Your Photo ${index + 1}`}/>
+                                                    <button onClick={() => removeMainImage(index)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">&times;</button>
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
+                                    </div>
+                                    {uploadedImages.length < MAX_MAIN_IMAGES && (
+                                        <label htmlFor="main-file-upload" className={fileInputButtonClasses}>
+                                            Add Your Photos ({uploadedImages.length}/{MAX_MAIN_IMAGES})
+                                        </label>
+                                    )}
+                                    <input id="main-file-upload" type="file" multiple className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageUpload(e, 'main')} disabled={uploadedImages.length >= MAX_MAIN_IMAGES}/>
+                                </div>
 
-                {(appState === 'generating' || appState === 'results-shown') && (
-                     <>
-                        <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4 px-4">
-                            {generatedImages.map((image, index) => (
-                                <motion.div 
-                                    key={index}
-                                    className="flex justify-center"
-                                    initial={{ opacity: 0, y: 50 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                                >
-                                     <PhotoCard
-                                        caption={`Result ${index + 1}`}
-                                        status={image.status}
-                                        imageUrl={image.url}
-                                        error={image.error}
-                                        onRegenerate={() => handleRegenerateSlot(index)}
-                                        onDownload={() => handleDownloadIndividualImage(index)}
+                                <div className="flex-1 w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
+                                    <h2 className="text-2xl font-bold text-white">2. Upload Vibe Photos</h2>
+                                    <div className="w-full min-h-[200px] bg-black/20 rounded-lg p-3 grid grid-cols-3 gap-3">
+                                        <AnimatePresence>
+                                            {inspirationImages.map((src, index) => (
+                                                <motion.div key={src.slice(0, 30) + index} className="relative aspect-square" layout
+                                                    initial={{ opacity: 0, scale: 0.5 }}
+                                                    animate={{ opacity: 1, scale: 1 }}
+                                                    exit={{ opacity: 0, scale: 0.5 }}
+                                                >
+                                                    <img src={src} className="w-full h-full object-cover rounded-md" alt={`Inspiration ${index + 1}`}/>
+                                                    <button onClick={() => removeInspirationImage(index)} className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full h-5 w-5 flex items-center justify-center text-xs font-bold">&times;</button>
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
+                                    </div>
+                                    {inspirationImages.length < MAX_INSPIRATION_IMAGES && (
+                                        <label htmlFor="inspiration-file-upload" className={fileInputButtonClasses}>
+                                            Add Photos ({inspirationImages.length}/{MAX_INSPIRATION_IMAGES})
+                                        </label>
+                                    )}
+                                    <input id="inspiration-file-upload" type="file" multiple className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => handleImageUpload(e, 'inspiration')} disabled={inspirationImages.length >= MAX_INSPIRATION_IMAGES}/>
+                                </div>
+                            </div>
+                            
+                            <div className="w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
+                                 <h2 className="text-2xl font-bold text-white">3. (Optional) Add Instructions</h2>
+                                 <textarea
+                                     value={userPrompt}
+                                     onChange={(e) => setUserPrompt(e.target.value)}
+                                     placeholder="e.g., make my hair blue, place me in a futuristic city, turn this into a watercolor painting..."
+                                     className="w-full h-24 bg-black/20 rounded-lg p-3 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-orange-400 transition-all"
+                                     aria-label="Additional instructions for image generation"
+                                 />
+                            </div>
+                            
+                            <div className="w-full flex flex-col items-center gap-4 p-6 bg-white/10 rounded-2xl">
+                                <h2 className="text-2xl font-bold text-white">4. Number of Images</h2>
+                                <div className="w-full flex items-center gap-4 px-2">
+                                    <input
+                                        type="range"
+                                        min="1"
+                                        max="8"
+                                        value={generationCount}
+                                        onChange={(e) => setGenerationCount(Number(e.target.value))}
+                                        className="w-full h-2 bg-black/30 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                                        aria-label="Number of images to generate"
                                     />
-                                </motion.div>
-                            ))}
+                                    <span className="text-2xl font-bold w-12 text-center select-none">{generationCount}</span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {appState === 'photos-uploaded' && (
+                         <div className="mt-8">
+                             <button onClick={handleGenerateClick} className={primaryButtonClasses} disabled={isGenerateButtonDisabled}>
+                                Generate ({generationCount} Image{generationCount > 1 ? 's' : ''})
+                            </button>
                         </div>
-                         <div className="h-20 mt-8 flex items-center justify-center">
-                            {appState === 'results-shown' && (
-                                <motion.div 
-                                    className="flex flex-col sm:flex-row items-center gap-4"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5 }}
-                                >
-                                    <button 
-                                        onClick={handleDownloadAlbum} 
-                                        disabled={isDownloading} 
-                                        className={`${primaryButtonClasses} disabled:opacity-50 disabled:cursor-not-allowed`}
+                    )}
+
+
+                    {(appState === 'generating' || appState === 'results-shown') && (
+                         <>
+                            <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-4 px-4">
+                                {generatedImages.map((image, index) => (
+                                    <motion.div 
+                                        key={index}
+                                        className="flex justify-center"
+                                        initial={{ opacity: 0, y: 50 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.5, delay: index * 0.1 }}
                                     >
-                                        {isDownloading ? 'Creating Album...' : 'Download Album'}
-                                    </button>
-                                    <button onClick={handleReset} className={secondaryButtonClasses}>
-                                        Start Over
-                                    </button>
-                                </motion.div>
-                            )}
-                             {appState === 'generating' && (
-                                 <div className="text-center">
-                                     <p className="text-xl font-semibold animate-pulse">Analyzing the vibe and generating your shots...</p>
-                                     <p className="text-neutral-300 mt-1">This may take a moment.</p>
-                                 </div>
-                             )}
-                        </div>
-                    </>
-                )}
-            </div>
+                                         <PhotoCard
+                                            caption={`Result ${index + 1}`}
+                                            status={image.status}
+                                            imageUrl={image.url}
+                                            error={image.error}
+                                            onRegenerate={() => handleRegenerateSlot(index)}
+                                            onDownload={() => handleDownloadIndividualImage(index)}
+                                        />
+                                    </motion.div>
+                                ))}
+                            </div>
+                             <div className="h-20 mt-8 flex items-center justify-center">
+                                {appState === 'results-shown' && (
+                                    <motion.div 
+                                        className="flex flex-col sm:flex-row items-center gap-4"
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ delay: 0.5 }}
+                                    >
+                                        <button 
+                                            onClick={handleDownloadAlbum} 
+                                            disabled={isDownloading} 
+                                            className={`${primaryButtonClasses} disabled:opacity-50 disabled:cursor-not-allowed`}
+                                        >
+                                            {isDownloading ? 'Creating Album...' : 'Download Album'}
+                                        </button>
+                                        <button onClick={handleReset} className={secondaryButtonClasses}>
+                                            Start Over
+                                        </button>
+                                    </motion.div>
+                                )}
+                                 {appState === 'generating' && (
+                                     <div className="text-center">
+                                         <p className="text-xl font-semibold animate-pulse">Analyzing the vibe and generating your shots...</p>
+                                         <p className="text-neutral-300 mt-1">This may take a moment.</p>
+                                     </div>
+                                 )}
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
             <Footer />
         </main>
     );
