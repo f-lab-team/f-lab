@@ -24,4 +24,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1RV8KJJQZ0pH4LxJsT9wu_k
 
 Perfect_shot
 
-Deploy: https://realreal-final.web.app   
+Deploy: https://realreal-final.web.app 
+
+
+Deploy_real: https://fir-5a398.web.app
